@@ -72,9 +72,26 @@ function playVideo(url, tabid) {
     }
 }
 
+// 切换tab
+function switch_tabs(url, tabid) {
+    if(url.indexOf('https://mooc1-2.chaoxing.com/knowledge/cards?clazzid=') != -1) {
+        console.log(url);
+
+        chrome.tabs.executeScript(tabid, {
+            file: "js/jquery.min.js",
+            runAt: "document_start"
+        });
+
+        chrome.tabs.executeScript(tabid, {
+            file: "js/switch_tabs.js"
+        })
+    }
+}
+
 chrome.webRequest.onCompleted.addListener(function(details) {
     playVideo(details.url, details.tabId);
     exam(details.url, details.tabId);
+    switch_tabs(details.url, details.tabId)
 }, {urls: ["<all_urls>"]}, ["responseHeaders"]);
 
 chrome.contextMenus.create({

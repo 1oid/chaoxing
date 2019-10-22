@@ -32,28 +32,29 @@ function stop_pause(){
     })
 }
 
+function start(){
+    setTimeout(function() {
+        video_start();
+        stop_pause();
 
-setTimeout(function() {
-    video_start();
-    stop_pause();
+        // 时间监听
+        $("#iframe").contents().find(".ans-attach-online").contents().find("video").on("timeupdate", 
+            function(){
+                var video = $("#iframe").contents().find(".ans-attach-online").contents().find("video")[0];
+                var ctime = video.currentTime / 60;
+                var ttime = video.duration / 60 - 1;
+                
+                // console.log(ctime);
+                // console.log(ttime);
+                if(ctime >= ttime) {
+                    console.log("已完成");
+                    // $($(".orange01")[1]).siblings()[2].click();
+                    $($(".ncells .currents").parent()).next().find('a')[0].click()
 
-    // 时间监听
-    $("#iframe").contents().find(".ans-attach-online").contents().find("video").on("timeupdate", 
-        function(){
-            var video = $("#iframe").contents().find(".ans-attach-online").contents().find("video")[0];
-            var ctime = video.currentTime / 60;
-            var ttime = video.duration / 60 - 1;
-            
-            // console.log(ctime);
-            // console.log(ttime);
-            if(ctime >= ttime) {
-                console.log("已完成");
-                $($(".orange01")[0]).siblings()[2].click();
+                    start();
+                }
+            })
+    }, 2000);
+}
 
-                setTimeout(function() {
-                    video_start();
-                    stop_pause();
-                }, 2000);
-            }
-        })
-}, 2000);
+start();
