@@ -23,6 +23,7 @@ function selected() {
 function video_start() {
     console.log("video start");
     $("#iframe").contents().find(".ans-attach-online").contents().find(".vjs-big-play-button").click();
+    $("#iframe").contents().find(".ans-attach-online").contents().find(".vjs-mute-control").click()
 }
 
 function stop_pause(){
@@ -49,7 +50,11 @@ function start(){
                 if(ctime >= ttime) {
                     console.log("已完成");
                     // $($(".orange01")[1]).siblings()[2].click();
-                    $($(".ncells .currents").parent()).next().find('a')[0].click()
+                    if($($(".ncells .currents").parent()).next().length > 0) {
+                        $($(".ncells .currents").parent()).next().find('a')[0].click();
+                    }else{
+                        $(".ncells .currents").parent().parent().next().find('a')[0].click();
+                    }
 
                     start();
                 }
