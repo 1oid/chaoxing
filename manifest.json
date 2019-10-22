@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "超星",
+    "version": "1.0",
+    "description": "超星自动播放",
+    "icons": {
+        "16": "images/star.png",
+        "48": "images/star.png",
+        "128": "images/star.png"
+    },
+    "browser_action": {
+        "default_title": ""
+    },
+    "content_scripts": [
+    ],
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "permissions": [
+        "<all_urls>",
+        "proxy",
+        "notifications",
+        "tabs",
+        "windows",
+        "contextMenus",
+        "browsingData",
+        "webRequest",
+        "webRequestBlocking"
+    ]
+}
