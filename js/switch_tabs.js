@@ -1,9 +1,11 @@
 function switch_tab(){
 
     var tagtabs = $(".tabtags>span");
+    var text = $(".tabtags .currents").attr("title");
+    console.log(text);
 
-    console.log(tagtabs)
-    if($(".tabtags .currents").attr("title") != "视频") {
+
+    if(text == "学习目标") {
         for(var i = 0;i<tagtabs.length;i++) {
             var t = $(tagtabs[i]).attr('title');
 
@@ -16,6 +18,5 @@ function switch_tab(){
     
 }
 
-console.log("sasaad");
 
 switch_tab();

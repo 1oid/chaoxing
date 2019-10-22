@@ -43,7 +43,7 @@ function start(){
             function(){
                 var video = $("#iframe").contents().find(".ans-attach-online").contents().find("video")[0];
                 var ctime = video.currentTime / 60;
-                var ttime = video.duration / 60 - 1;
+                var ttime = video.duration / 60 - 0.3;
                 
                 // console.log(ctime);
                 // console.log(ttime);
