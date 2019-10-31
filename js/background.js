@@ -1,54 +1,80 @@
 var taskList = {
     data: [],
-    add(val){
-        if(!this.exsit(val)) {
+    add(val) {
+        if (!this.exsit(val)) {
             this.data.push(val);
         }
     },
     exsit(val) {
         let flag = false;
 
-        for(let i = 0;i < this.data.length;i++) {
-            if(val == this.data[i])
+        for (let i = 0; i < this.data.length; i++) {
+            if (val == this.data[i])
                 flag = true;
         }
         return flag;
     }
 }
 
+var a;
+// 遇到考试题
+function _temp_exam(url, tabid) {
+    if (url.indexOf("https://mooc1-2.chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
+        http(url + "&_bg", function (data) {
+            var datas = JSON.parse(data)[0].datas;
+            var question_length = 0;
+            var answers = [];
+
+            for(var i = 0;i < datas.length;i++) {
+                if(!datas[i].answered){
+                    question_length++;
+                    
+                    console.log(datas[i].options);
+                    for(var j = 0;j<datas[i].options.length;j++) {
+                        if(datas[i].options[j].isRight) {
+                            answers.push("第"+(i+1)+"题的答案是: " + datas[i].options[j].name);
+                        }
+                    }
+                    
+                }
+            }
+
+
+            chrome.tabs.executeScript(tabid, {
+                code: "alert('该章节有"+question_length+"道题, " + answers.join(',') +"')",
+                allFrames: true
+            })
+        })
+    }
+}
+
 // 考试
 function exam(url, tabid) {
-    if(url.indexOf("https://mooc1-2.chaoxing.com/work/doHomeWorkNew") != -1) {
+    if (url.indexOf("https://mooc1-2.chaoxing.com/work/doHomeWorkNew") != -1) {
         console.log(url);
 
-        // chrome.tabs.executeScript(tabid, {
-        //     code: 'function http(url,callback){var xhr=new XMLHttpRequest();xhr.open("GET",url);xhr.onreadystatechange=function(){if(xhr.readyState==4){callback(xhr.responseText)}};xhr.send()}var titles=document.getElementById("iframe").contentWindow.document.getElementsByTagName("iframe")[0].contentWindow.document.getElementById("frame_content").contentWindow.document.getElementById("ZyBottom").getElementsByClassName("Zy_TItle");for(var i=0;i<titles.length;i++){var title=titles[i].getElementsByTagName("div");http("http://xdt.1ym.shop/tiku.php?tm="+titles[i].innerText,function(data){title[0].before(data)})};',
-            
-        // })
-
         chrome.tabs.executeScript(tabid, {
-            file: "js/exam.js",
-            allFrames: true
+            file: "js/exam.js"
         })
     }
 }
 
 // 前端传递过来试题
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log(sender);
-    if(message.type == "exam") {
+    if (message.type == "exam") {
         console.log(message.text);
 
-        
-        http("http://xdt.1ym.shop/tiku.php?tm=" + message.text, function(data){
+
+        http("http://xdt.1ym.shop/tiku.php?tm=" + message.text, function (data) {
             chrome.tabs.sendMessage(sender.tab.id, {
                 index: message.index, answer: data
-            }, {frameId: sender.frameId}, function(response){
+            }, { frameId: sender.frameId }, function (response) {
 
             })
         });
-        sendResponse({index: message.index, answer: "lalala"});
-        
+        sendResponse({ index: message.index, answer: "lalala" });
+
     }
 });
 
@@ -57,14 +83,14 @@ function playVideo(url, tabid) {
     let host = url.indexOf("https://mooc1-2.chaoxing.com/ananas/status");
     let path = url.indexOf("https://mooc1-2.chaoxing.com/ananas/status");
 
-    if(host != -1 && path != -1) {
+    if (host != -1 && path != -1) {
         console.log(url);
 
         chrome.tabs.executeScript(tabid, {
             file: "js/jquery.min.js",
             runAt: "document_start"
         });
-        
+
         chrome.tabs.executeScript(tabid, {
             file: "js/content_script.js",
             runAt: "document_end"
@@ -74,7 +100,7 @@ function playVideo(url, tabid) {
 
 // 切换tab
 function switch_tabs(url, tabid) {
-    if(url.indexOf('https://mooc1-2.chaoxing.com/knowledge/cards?clazzid=') != -1) {
+    if (url.indexOf('https://mooc1-2.chaoxing.com/knowledge/cards?clazzid=') != -1) {
         console.log(url);
 
         chrome.tabs.executeScript(tabid, {
@@ -88,18 +114,19 @@ function switch_tabs(url, tabid) {
     }
 }
 
-chrome.webRequest.onCompleted.addListener(function(details) {
+chrome.webRequest.onCompleted.addListener(function (details) {
     playVideo(details.url, details.tabId);
     exam(details.url, details.tabId);
-    switch_tabs(details.url, details.tabId)
-}, {urls: ["<all_urls>"]}, ["responseHeaders"]);
+    switch_tabs(details.url, details.tabId);
+    _temp_exam(details.url, details.tabId);
+}, { urls: ["<all_urls>"] }, ["responseHeaders"]);
 
 chrome.contextMenus.create({
     title: '发送任务到后台',
-    onclick: function(info) {
+    onclick: function (info) {
         chrome.tabs.query({
             url: info.pageUrl
-        }, function(tabs) {
+        }, function (tabs) {
             let tab = tabs[0];
             taskList.add(tab.id);
 
@@ -118,16 +145,16 @@ chrome.contextMenus.create({
 chrome.contextMenus.create({
     title: '搜题',
     contexts: ['selection'],
-    onclick: function(info) {
+    onclick: function (info) {
         var text = info.selectionText;
 
-        http("http://xdt.1ym.shop/tiku.php?tm=" + text, function(data){
+        http("http://xdt.1ym.shop/tiku.php?tm=" + text, function (data) {
             chrome.tabs.query({
                 url: info.pageUrl
-            }, function(tabs) {
+            }, function (tabs) {
                 let tab = tabs[0];
                 taskList.add(tab.id);
-                
+
                 // chrome.tabs.executeScript(tab.id, {
                 //     code: 'console.log(\''+ data.split("\n")[1]+'\')'
                 // })
@@ -141,8 +168,8 @@ chrome.contextMenus.create({
 function http(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-        if(xhr.readyState == 4) {
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
             callback(xhr.responseText);
         }
     }
