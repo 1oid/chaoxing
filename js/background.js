@@ -25,26 +25,26 @@ function _temp_exam(url, tabid) {
             var question_length = 0;
             var answers = [];
 
-            for(var i = 0;i < datas.length;i++) {
-                if(!datas[i].answered){
+            for (var i = 0; i < datas.length; i++) {
+                if (!datas[i].answered) {
                     question_length++;
-                    
+
                     console.log(datas[i].options);
-                    for(var j = 0;j<datas[i].options.length;j++) {
-                        if(datas[i].options[j].isRight) {
-                            answers.push("第"+(i+1)+"题的答案是: " + datas[i].options[j].name);
+                    for (var j = 0; j < datas[i].options.length; j++) {
+                        if (datas[i].options[j].isRight) {
+                            answers.push("第" + (i + 1) + "题的答案是: " + datas[i].options[j].name);
                         }
                     }
-                    
+
                 }
             }
-            
+
             chrome.tabs.executeScript(tabid, {
                 file: "js/jquery.min.js",
                 runAt: "document_start"
             });
-            
-            var ans = 'if(document.getElementsByClassName("ans-cc").length > 0) {document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText = document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText + \'' + '该章节有'+question_length+'道题, ' + answers.join(',') + "'}";
+
+            var ans = 'if(document.getElementsByClassName("ans-cc").length > 0) {document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText = document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText + \'' + '该章节有' + question_length + '道题, ' + answers.join(',') + "'}";
             chrome.tabs.executeScript(tabid, {
                 code: ans,
                 allFrames: true
@@ -56,10 +56,12 @@ function _temp_exam(url, tabid) {
 // 考试
 function exam(url, tabid) {
     if (url.indexOf("https://mooc1-2.chaoxing.com/work/doHomeWorkNew") != -1) {
+        console.log("work");
         console.log(url);
 
         chrome.tabs.executeScript(tabid, {
-            file: "js/exam.js"
+            file: "js/exam.js",
+            allFrames: true
         })
     }
 }
