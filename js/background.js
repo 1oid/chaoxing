@@ -38,10 +38,15 @@ function _temp_exam(url, tabid) {
                     
                 }
             }
-
-
+            
             chrome.tabs.executeScript(tabid, {
-                code: "alert('该章节有"+question_length+"道题, " + answers.join(',') +"')",
+                file: "js/jquery.min.js",
+                runAt: "document_start"
+            });
+            
+            var ans = 'if(document.getElementsByClassName("ans-cc").length > 0) {document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText = document.getElementsByClassName("ans-cc")[0].getElementsByTagName("h2")[0].getElementsByTagName("strong")[0].getElementsByTagName("span")[0].innerText + \'' + '该章节有'+question_length+'道题, ' + answers.join(',') + "'}";
+            chrome.tabs.executeScript(tabid, {
+                code: ans,
                 allFrames: true
             })
         })
