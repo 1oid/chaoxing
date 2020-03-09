@@ -22,15 +22,22 @@ function selected() {
 // 自动播放
 function video_start() {
     console.log("video start");
+    // // 切换公网线路(解决 湖南商务职业技术学院本校线路问题)
+     $("#iframe").contents().find(".ans-attach-online").contents().find(".vjs-playline-button li:nth-of-type(2)").click()
     $("#iframe").contents().find(".ans-attach-online").contents().find(".vjs-big-play-button").click();
     $("#iframe").contents().find(".ans-attach-online").contents().find(".vjs-mute-control").click()
 }
 
 function stop_pause(){
-    $("#iframe").contents().find(".ans-attach-online").contents().find("#video_html5_api").on("pause", function(){
+    // document.querySelector("#video_html5_api").pause = function(){}
+    // $("#iframe").contents().find(".ans-attach-online").contents().find("#video_html5_api").on("pause", function(){
+    //     console.log("stop pause");
+    //     video_start();
+    // })
+    $("#iframe").contents().find(".ans-attach-online").contents().find("#video_html5_api")[0].pause = function(){
         console.log("stop pause");
         video_start();
-    })
+    }
 }
 
 function start(){

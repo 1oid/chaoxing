@@ -19,9 +19,10 @@ var taskList = {
 var a;
 // 遇到考试题
 function _temp_exam(url, tabid) {
-    if (url.indexOf("https://mooc1-2.chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
+    if (url.indexOf("https://chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
         http(url + "&_bg", function (data) {
             var datas = JSON.parse(data)[0].datas;
+            console.log(datas);
             var question_length = 0;
             var answers = [];
 
@@ -55,7 +56,7 @@ function _temp_exam(url, tabid) {
 
 // 考试
 function exam(url, tabid) {
-    if (url.indexOf("https://mooc1-2.chaoxing.com/work/doHomeWorkNew") != -1) {
+    if (url.indexOf("chaoxing.com/work/doHomeWorkNew") != -1) {
         console.log("work");
         console.log(url);
 
@@ -87,8 +88,8 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
 // 播放视频
 function playVideo(url, tabid) {
-    let host = url.indexOf("https://mooc1-2.chaoxing.com/ananas/status");
-    let path = url.indexOf("https://mooc1-2.chaoxing.com/ananas/status");
+    let host = url.indexOf("chaoxing.com/ananas/status");
+    let path = url.indexOf("chaoxing.com/ananas/status");
 
     if (host != -1 && path != -1) {
         console.log(url);
@@ -107,7 +108,7 @@ function playVideo(url, tabid) {
 
 // 切换tab
 function switch_tabs(url, tabid) {
-    if (url.indexOf('https://mooc1-2.chaoxing.com/knowledge/cards?clazzid=') != -1) {
+    if (url.indexOf('chaoxing.com/knowledge/cards?clazzid=') != -1) {
         console.log(url);
 
         chrome.tabs.executeScript(tabid, {

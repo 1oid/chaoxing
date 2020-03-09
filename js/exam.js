@@ -12,6 +12,8 @@ function http(url, callback) {
 }
 
 var zyBottom = document.getElementById("ZyBottom");
+console.log(zyBottom)
+
 if(zyBottom != null && zyBottom != undefined){
     var titles = document.getElementById("ZyBottom").getElementsByClassName("Zy_TItle");;
     console.log(titles);
@@ -24,6 +26,8 @@ if(zyBottom != null && zyBottom != undefined){
         });
     }
 }
+
+console.log(zyBottom)
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
     var titles = document.getElementById("ZyBottom").getElementsByClassName("Zy_TItle");
