@@ -19,7 +19,7 @@ var taskList = {
 var a;
 // 遇到考试题
 function _temp_exam(url, tabid) {
-    if (url.indexOf("https://chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
+    if (url.indexOf("chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
         http(url + "&_bg", function (data) {
             var datas = JSON.parse(data)[0].datas;
             console.log(datas);
