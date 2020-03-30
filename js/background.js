@@ -19,7 +19,7 @@ var taskList = {
 var a;
 // 遇到考试题
 function _temp_exam(url, tabid) {
-    if (url.indexOf("https://chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
+    if (url.indexOf("chaoxing.com/richvideo/initdatawithviewer?mid=") != -1 && url.indexOf("_bg") == -1) {
         http(url + "&_bg", function (data) {
             var datas = JSON.parse(data)[0].datas;
             console.log(datas);
@@ -67,6 +67,19 @@ function exam(url, tabid) {
     }
 }
 
+// 最后的考试
+function final_exam(url, tabid) {
+    if (url.indexOf("chaoxing.com/exam/test/reVersionTestStartNew") != -1) {
+        console.log("final exam");
+        console.log(url);
+
+        chrome.tabs.executeScript(tabid, {
+            file: "js/final_exam.js",
+            allFrames: true
+        })
+    }
+}
+
 // 前端传递过来试题
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log(sender);
@@ -74,9 +87,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         console.log(message.text);
 
 
-        http("http://xdt.1ym.shop/tiku.php?tm=" + message.text, function (data) {
+        http("https://wk.92e.win/wkapi.php?q=" + message.text, function (data) {
+            data = JSON.parse(data)
+            _text = `题目: ${data.tm}, 答案: ${data.answer}`;
+
             chrome.tabs.sendMessage(sender.tab.id, {
-                index: message.index, answer: data
+                index: message.index, answer: _text
             }, { frameId: sender.frameId }, function (response) {
 
             })
@@ -127,6 +143,7 @@ chrome.webRequest.onCompleted.addListener(function (details) {
     exam(details.url, details.tabId);
     switch_tabs(details.url, details.tabId);
     _temp_exam(details.url, details.tabId);
+    final_exam(details.url, details.tabId);
 }, { urls: ["<all_urls>"] }, ["responseHeaders"]);
 
 chrome.contextMenus.create({
@@ -156,7 +173,21 @@ chrome.contextMenus.create({
     onclick: function (info) {
         var text = info.selectionText;
 
-        http("http://xdt.1ym.shop/tiku.php?tm=" + text, function (data) {
+        // http("http://xdt.1ym.shop/tiku.php?tm=" + text, function (data) {
+        //     chrome.tabs.query({
+        //         url: info.pageUrl
+        //     }, function (tabs) {
+        //         let tab = tabs[0];
+        //         taskList.add(tab.id);
+
+        //         // chrome.tabs.executeScript(tab.id, {
+        //         //     code: 'console.log(\''+ data.split("\n")[1]+'\')'
+        //         // })
+        //         alert(data);
+        //     });
+        // });
+
+        http("https://wk.92e.win/wkapi.php?q=" + text, function(data){
             chrome.tabs.query({
                 url: info.pageUrl
             }, function (tabs) {
@@ -166,9 +197,10 @@ chrome.contextMenus.create({
                 // chrome.tabs.executeScript(tab.id, {
                 //     code: 'console.log(\''+ data.split("\n")[1]+'\')'
                 // })
-                alert(data);
+                data = JSON.parse(data);
+                alert(`题目: ${data.tm}\n答案: ${data.answer}`);
             });
-        });
+        })
     }
 })
 
